@@ -1,0 +1,64 @@
+[hub]
+protocol = https
+[credential]
+helper = /opt/boxen/bin/boxen-git-credential
+[core]
+excludesfile = /opt/boxen/config/git/gitignore
+[push]
+	default = current 
+[color]
+	ui = true
+[alias]
+  a = add
+  aa = !git add -A && git status -sb
+  c = commit -m
+  cibuild = push origin HEAD:mc-ci -f
+  co = checkout
+  cob = checkout -b
+  ir = !git rebase -i origin/master
+  done = !git fetch && git rebase origin/master && git checkout master && git merge @{-1} && rake && git push
+  rmb = !sh -c 'git branch -D $1 && git push origin :$1' -
+  cleanup = !git remote prune origin && git gc && git clean -df && git stash clear
+  who   = !git shortlog -sn
+  lcrev = log --reverse --no-merges --stat @{1}..
+  next = !git add . && git rebase --continue
+  unfuck = reset --hard HEAD
+  l = log --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  la = log --all --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  ll = log --stat --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+  d = diff --word-diff
+[color "branch"]
+  current = yellow reverse
+  local = yellow
+  remote = green
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan
+[core]
+  editor = `which vim`
+  excludesfile = ~/.gitignore
+[apply]
+  whitespace = nowarn
+[http]
+  sslverify = false
+  postBuffer = 1824288000
+[rerere]
+  enabled = 1
+[push]
+  default = current
+[web]
+  browser = open
+[diff]
+  tool = vimdiff
+[branch "master"]
+  mergeoptions = --no-ff
+
+[user]
+	email = mykecameron@gmail.com
+	name = Myke Cameron
