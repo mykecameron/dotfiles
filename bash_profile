@@ -46,6 +46,8 @@ source ~/.git-completion.bash
 
 # Aliases
 alias cdi='cd ~/projects/IoraHealth'
+alias cdf='cd ~/projects/filament'
+
 alias glog='git l'
 alias vi="vim"
 alias cp="cp -iv"
