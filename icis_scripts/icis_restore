@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DUMP=$1
+
+echo 'Killing database connections'
+sudo pkill -SIGTERM -f iora_health_development
+
+echo 'Droping and recreating database'
+bundle exec rake db:drop db:create
+
+echo 'Restoring database with dump: '$DUMP
+pg_restore -O -x -n public -d iora_health_development $DUMP
+
+echo 'Migrating database'
+bundle exec rake db:migrate
