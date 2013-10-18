@@ -4,6 +4,9 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 # Boxen
 [ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
 
+# Include home bin
+export PATH="$HOME/bin:$PATH"
+
 # Load in the git branch prompt script.
 source ~/bin/.git-prompt.sh
 
