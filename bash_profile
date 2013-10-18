@@ -73,3 +73,14 @@ alias cucumber='be cucumber'
 alias cuc='cucumber'
 alias bake='be rake'
 alias fuci='be fuci'
+alias spec='be rspec'
+
+vim()
+{
+  local ret STTYOPTS="$(stty -g)"
+  stty -ixon
+  command vim "$@"
+  ret=$?
+  stty "$STTYOPTS"
+  return "$ret"
+}
