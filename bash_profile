@@ -84,3 +84,6 @@ vim()
   stty "$STTYOPTS"
   return "$ret"
 }
+
+# For nodenv
+export PATH="$HOME/.nodenv/bin:$PATH"
