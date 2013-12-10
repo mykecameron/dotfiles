@@ -3,9 +3,10 @@ protocol = https
 [credential]
 helper = /opt/boxen/bin/boxen-git-credential
 [core]
-excludesfile = /opt/boxen/config/git/gitignore
+  editor = `which vim`
+  excludesfile = /opt/boxen/config/git/gitignore
 [push]
-	default = current 
+  default = current
 [color]
 	ui = true
 [alias]
@@ -42,7 +43,7 @@ excludesfile = /opt/boxen/config/git/gitignore
   untracked = cyan
 [core]
   editor = `which vim`
-  excludesfile = ~/.gitignore
+  excludesfile = /opt/boxen/config/git/gitignore
 [apply]
   whitespace = nowarn
 [http]
