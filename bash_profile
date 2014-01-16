@@ -46,6 +46,7 @@ source ~/.git-completion.bash
 
 # Aliases
 alias cdi='cd ~/src/icisstaff'
+alias cds='cd ~/src/snowflake'
 alias cdf='cd ~/projects/filament'
 
 alias glog='git l'
