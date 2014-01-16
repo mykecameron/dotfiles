@@ -88,3 +88,7 @@ vim()
 
 # For nodenv
 export PATH="$HOME/.nodenv/bin:$PATH"
+
+# For my scripts
+export PATH="$HOME/src/my-environment/icis_scripts:$PATH"
+export PATH="$HOME/src/toolchest/bin:$PATH"
