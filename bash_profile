@@ -75,6 +75,8 @@ alias cuc='cucumber'
 alias bake='be rake'
 alias fuci='be fuci'
 alias spec='be rspec'
+alias frbe='foreman run bundle exec'
+alias bails='be rails'
 
 vim()
 {
