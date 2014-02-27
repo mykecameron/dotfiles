@@ -92,3 +92,6 @@ export PATH="$HOME/.nodenv/bin:$PATH"
 # For my scripts
 export PATH="$HOME/src/my-environment/icis_scripts:$PATH"
 export PATH="$HOME/src/toolchest/bin:$PATH"
+
+# For tmux powerline
+PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
