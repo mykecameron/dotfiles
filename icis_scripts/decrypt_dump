@@ -1,6 +1,0 @@
-#!/bin/bash
-
-ENC_DUMP=$1
-TARGET=$(echo $1 | sed 's/.enc//')
-
-openssl enc -d -aes-256-cbc -out $TARGET <$ENC_DUMP
