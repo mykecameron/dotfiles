@@ -130,5 +130,4 @@ endfunction
 set undofile                " Save undo's after file closes
 set undodir=$HOME/.vim_undo " where to save undo histories
 
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
+set colorcolumn=81
