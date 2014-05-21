@@ -1,3 +1,5 @@
+[ -f /opt/boxen/env.sh ] && source /opt/boxen/env.sh
+
 # Include rbenv in path
 export PATH="$HOME/.rbenv/bin:$PATH"
 
