@@ -4,7 +4,7 @@ filetype off                   " required!
 " set leader to space
 let mapleader = " "
 
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#rc()
 
 " let Vundle manage Vundle
@@ -13,12 +13,11 @@ Bundle 'gmarik/vundle'
 
 " vundles:
 Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-Bundle 'tpope/vim-rails.git'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'flazz/vim-colorschemes.git'
-Bundle 'tsaleh/vim-matchit'
+Bundle 'jwhitley/vim-matchit'
 Bundle 'tComment'
 Bundle 'ervandew/supertab'
 Bundle 'pangloss/vim-javascript'
@@ -37,7 +36,6 @@ Bundle 'ack.vim'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'hallettj/jslint.vim'
 Bundle 'tpope/vim-endwise'
-Bundle 'godlygeek/tabular'
 
 filetype plugin indent on     " required!
 "
