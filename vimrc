@@ -50,7 +50,11 @@ filetype plugin indent on     " required!
 
 " syntax highlighting
 syntax on
-colorscheme jelleybeans
+
+" colors
+set t_Co=256
+set background=dark
+colorscheme jellybeans
 
 " highlight jslint errors magenta
 hi clear SpellBad
