@@ -102,3 +102,7 @@ source ~/.super-secret-staging-password
 
 # For tmux powerline
 PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
+
+# For go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
