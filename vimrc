@@ -37,6 +37,8 @@ Bundle 'Lokaltog/vim-powerline'
 Bundle 'hallettj/jslint.vim'
 Bundle 'tpope/vim-endwise'
 
+" Plugin 'fatih/vim-go'
+"
 filetype plugin indent on     " required!
 "
 " Brief help
