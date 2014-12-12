@@ -104,6 +104,9 @@ set showbreak="@"  " This is prepended to wrapped lines
 set list listchars=tab:»·,trail:· " Display extra whitespace
 set laststatus=2                  " Always show status line (not only for multiple windows)
 
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+
 set undofile " Store undo history between buffer and file reloads and reopens
 
 " " copy and paste from os x clipboard
