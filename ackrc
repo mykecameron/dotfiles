@@ -1,1 +1,2 @@
 --ignore-dir=log
+--ignore-file=is:.initial_rspec_output.json
