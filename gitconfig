@@ -28,6 +28,7 @@ helper = /opt/boxen/bin/boxen-git-credential
   la = log --all --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   ll = log --stat --graph --pretty=format:'%Cred%h%Creset %an: %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
   d = diff --word-diff
+  b = !git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads/ | peco | xargs git checkout
 [color "branch"]
   current = yellow reverse
   local = yellow
