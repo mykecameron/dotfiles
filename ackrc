@@ -1,2 +1,7 @@
 --ignore-dir=log
+--ignore-dir=vendor
+--ignore-dir=dist
+--ignore-dir=generated
+--ignore-dir=public/assets
 --ignore-file=is:.initial_rspec_output.json
+--ignore-file=match:.map
