@@ -79,6 +79,7 @@ alias fuci='be fuci'
 alias spec='be rspec'
 alias frbe='foreman run bundle exec'
 alias bails='be rails'
+alias wipe='clear && tmux clear-history'
 
 vim()
 {
