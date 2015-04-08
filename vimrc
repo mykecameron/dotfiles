@@ -38,6 +38,7 @@ Bundle 'hallettj/jslint.vim'
 Bundle 'tpope/vim-endwise'
 Plugin 'mustache/vim-mustache-handlebars'
 Bundle 'tpope/vim-abolish'
+Plugin 'embear/vim-localvimrc'
 
 " Plugin 'fatih/vim-go'
 "
@@ -68,7 +69,6 @@ hi SpellBad cterm=underline,bold ctermfg=magenta
 set tabstop=2     " size of a hard tabstop
 set shiftwidth=2  " size of an "indent"
 set softtabstop=2 " a combination of spaces and tabs are used to simulate tab stops at a width other than the (hard)tabstop
-set smarttab      " make "tab" insert indents instead of tabs at the beginning of a line
 set expandtab     " always uses spaces instead of tab characters
 
 set smarttab       " insert tabs on the start of a line according to shiftwidth, not tabstop
