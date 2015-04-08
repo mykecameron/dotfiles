@@ -140,4 +140,4 @@ set undodir=$HOME/.vim_undo " where to save undo histories
 
 set colorcolumn=81
 
-set wildignore=node_modules/*
+set wildignore=node_modules/*,bower_components/*,dist/*
