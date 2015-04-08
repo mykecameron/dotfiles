@@ -142,3 +142,6 @@ set undodir=$HOME/.vim_undo " where to save undo histories
 set colorcolumn=81
 
 set wildignore=node_modules/*,bower_components/*,dist/*
+
+" Highlight EJS like HTML
+au BufNewFile,BufRead *.ejs set filetype=html
