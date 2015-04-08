@@ -37,6 +37,7 @@ Bundle 'Lokaltog/vim-powerline'
 Bundle 'hallettj/jslint.vim'
 Bundle 'tpope/vim-endwise'
 Plugin 'mustache/vim-mustache-handlebars'
+Bundle 'tpope/vim-abolish'
 
 " Plugin 'fatih/vim-go'
 "
