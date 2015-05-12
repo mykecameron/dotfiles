@@ -34,11 +34,11 @@ Bundle 'vim-ruby/vim-ruby'
 Bundle 'godlygeek/tabular'
 Bundle 'ack.vim'
 Bundle 'Lokaltog/vim-powerline'
-Bundle 'hallettj/jslint.vim'
 Bundle 'tpope/vim-endwise'
 Plugin 'mustache/vim-mustache-handlebars'
 Bundle 'tpope/vim-abolish'
 Plugin 'embear/vim-localvimrc'
+Bundle "wookiehangover/jshint.vim"
 
 " Plugin 'fatih/vim-go'
 "
