@@ -80,6 +80,7 @@ alias spec='be rspec'
 alias frbe='foreman run bundle exec'
 alias bails='be rails'
 alias wipe='clear && tmux clear-history'
+alias restart_rabbit='boxen —restart-service rabbitmq'
 
 vim()
 {
@@ -96,6 +97,7 @@ export PATH="$HOME/.nodenv/bin:$PATH"
 
 # For my scripts
 export PATH="$HOME/src/my-environment/icis_scripts:$PATH"
+export PATH="$HOME/src/my-environment/bin:$PATH"
 export PATH="$HOME/src/toolchest/bin:$PATH"
 
 # For staging dumps
@@ -107,3 +109,19 @@ PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -
 # For go
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
+
+# For ICIS Patients
+ulimit -n 2560
+
+# For release script
+export EDITOR="vim"
+
+# For tbm tab completion
+complete -W "$(cat ~/.tbm | grep -E '^ \S' | tr -d : | xargs)" tbm
+
+# For selenium
+export SELENIUM_FIREFOX_BIN_PATH='/Applications/Firefox19.app/Contents/MacOS/firefox-bin'
+
