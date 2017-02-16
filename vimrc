@@ -9,12 +9,9 @@ call vundle#begin()
 
 " let Vundle manage Vundle
 " required!
-Bundle 'gmarik/vundle'
+Plugin 'VundleVim/Vundle.vim'
 
 " vundles:
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
-Bundle 'L9'
-Bundle 'FuzzyFinder'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'flazz/vim-colorschemes.git'
 Bundle 'jwhitley/vim-matchit'
@@ -24,33 +21,23 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'tpope/vim-cucumber'
 Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-git'
-Bundle 'tpope/vim-haml'
 Bundle 'tpope/vim-markdown'
 Bundle 'tpope/vim-rake'
 Bundle 'tpope/vim-rails'
 Bundle 'tsaleh/vim-shoulda'
 Bundle 'vim-ruby/vim-ruby'
 Bundle 'godlygeek/tabular'
-Bundle 'ack.vim'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'tpope/vim-endwise'
 Plugin 'mustache/vim-mustache-handlebars'
-Bundle 'tpope/vim-abolish'
 Plugin 'embear/vim-localvimrc'
-Bundle "wookiehangover/jshint.vim"
+Bundle 'vim-syntastic/syntastic'
 
 call vundle#end()
 filetype plugin indent on     " required!
-"
-" Brief help
-" :BundleList          - list configured bundles
-" :BundleInstall(!)    - install(update) bundles
-" :BundleSearch(!) foo - search(or refresh cache first) for foo
-" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
-"
-" see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle command are not allowed..
+
+" powerline fancy symbols
+let g:Powerline_symbols = 'fancy'
 
 " syntax highlighting
 syntax on
@@ -59,10 +46,6 @@ syntax on
 set t_Co=256
 set background=dark
 colorscheme jellybeans
-
-" highlight jslint errors magenta
-hi clear SpellBad
-hi SpellBad cterm=underline,bold ctermfg=magenta
 
 " sane tab behavior
 set tabstop=2     " size of a hard tabstop
@@ -97,6 +80,7 @@ set winwidth=85    " extend width on buffer change. 80 + 5 for numbers
 set splitbelow
 set splitright
 
+set encoding=utf-8
 set fileencodings=utf-8,iso-8859-1
 set fileformats=unix,mac,dos
 set textwidth=0    " No width
@@ -109,12 +93,6 @@ highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 
 set undofile " Store undo history between buffer and file reloads and reopens
-
-" " copy and paste from os x clipboard
-" nmap <leader>p :set paste<CR>:r !pbpaste<CR>:set nopaste<CR>
-" " imap <leader>p <Esc>:set paste<CR>:r !pbpaste<CR>:set nopaste<CR>
-" nmap <leader>y :.w !pbcopy<CR><CR>
-" " vmap <leader>y :w !pbcopy<CR><CR>
 
 " For alignment (tabular plugin)
 vmap <Leader>a= :Tabularize /=<CR>
@@ -139,7 +117,7 @@ set undofile                " Save undo's after file closes
 set undodir=$HOME/.vim_undo " where to save undo histories
 
 set colorcolumn=81
-
+let g:CommandTFileScanner = 'find'
 set wildignore=node_modules/*,bower_components/*,dist/*,tmp/*
 
 " Highlight EJS like HTML
