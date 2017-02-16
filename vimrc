@@ -5,10 +5,10 @@ filetype off                   " required!
 let mapleader = " "
 
 set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#rc()
+call vundle#begin()
 
 " let Vundle manage Vundle
-" required! 
+" required!
 Bundle 'gmarik/vundle'
 
 " vundles:
@@ -40,8 +40,7 @@ Bundle 'tpope/vim-abolish'
 Plugin 'embear/vim-localvimrc'
 Bundle "wookiehangover/jshint.vim"
 
-" Plugin 'fatih/vim-go'
-"
+call vundle#end()
 filetype plugin indent on     " required!
 "
 " Brief help
