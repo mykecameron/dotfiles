@@ -80,7 +80,7 @@ alias spec='be rspec'
 alias frbe='foreman run bundle exec'
 alias bails='be rails'
 alias wipe='clear && tmux clear-history'
-alias restart_rabbit='boxen —restart-service rabbitmq'
+alias sspec='spring rspec'
 
 vim()
 {
