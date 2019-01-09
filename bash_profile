@@ -10,7 +10,7 @@ export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
 
 # Load in the git branch prompt script.
-source ~/bin/.git-prompt.sh
+source ~/src/my-environment/bin/git-prompt.sh
 
 # Ruby version (from rbenv) in prompt
 # rbenv version | sed -e 's/ .*//'
@@ -44,7 +44,7 @@ function prompt {
 prompt
 
 # Git completion
-source ~/.git-completion.bash
+source ~/src/my-environment/git-completion.bash
 
 # Aliases
 alias cdi='cd ~/src/icisstaff'
