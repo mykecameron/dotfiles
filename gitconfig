@@ -1,7 +1,7 @@
 [hub]
 protocol = https
 [credential]
-helper = /opt/boxen/bin/boxen-git-credential
+	helper = osxkeychain
 [core]
   editor = `which vim`
   excludesfile = /opt/boxen/config/git/gitignore
@@ -43,8 +43,7 @@ helper = /opt/boxen/bin/boxen-git-credential
   changed = green
   untracked = cyan
 [core]
-  editor = `which vim`
-  excludesfile = /opt/boxen/config/git/gitignore
+  editor = `which vi`
 [apply]
   whitespace = nowarn
 [http]
@@ -70,3 +69,8 @@ helper = /opt/boxen/bin/boxen-git-credential
 [mergetool "sourcetree"]
 	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+[github]
+	user = mykecameron
+[diff "ansible-vault"]
+  textconv = ansible-vault --vault-password-file=~/.vault_pass view
+  cachetextconv = false
