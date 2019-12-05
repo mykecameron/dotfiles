@@ -125,3 +125,6 @@ complete -W "$(cat ~/.tbm | grep -E '^ \S' | tr -d : | xargs)" tbm
 # For selenium
 export SELENIUM_FIREFOX_BIN_PATH='/Applications/Firefox19.app/Contents/MacOS/firefox-bin'
 
+# For special chrome for tests
+export PATH_TO_CHROME_FOR_TESTS="/Applications/Google Chrome Tests.app/Contents/MacOS/Google Chrome"
+
