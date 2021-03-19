@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+# for turning Trello card titles into branch names
+
+branch_name = "mc-#{ARGV.join('_').downcase}"
+exec("git co -b #{branch_name}")
