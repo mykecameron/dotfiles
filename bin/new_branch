@@ -2,5 +2,20 @@
 
 # for turning Trello card titles into branch names
 
-branch_name = "mc-#{ARGV.join('_').downcase}"
-exec("git co -b #{branch_name}")
+def branch_name(input)
+  input.
+    map(&:strip).
+    join('_').
+    gsub(/\s/, '_').
+    gsub(/[^\w_]/, '').
+    downcase
+end
+
+if ARGV.empty?
+  puts "must specify branch name, ex:"
+  puts "  new_branch some branch name"
+  puts "  new_branch \"some branch name!\""
+  exit
+end
+
+exec("git co -b mc-#{branch_name(ARGV)}")
