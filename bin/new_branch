@@ -1,9 +1,18 @@
 #!/usr/bin/env ruby
 
-# for turning Trello card titles into branch names
+# for turning Trello card titles and Jira issue ids into branch names
 
-def branch_name(input)
-  input.
+def branch_name
+  if jira?
+    "#{jira_issue_key}/#{sanitize_branch_name(jira_summary)}"
+  else
+    "mc-#{sanitize_branch_name(ARGV)}"
+  end
+end
+
+def sanitize_branch_name(input)
+  word_array = input.respond_to?(:map) ? input : input.split('\s')
+  word_array.
     map(&:strip).
     join('_').
     gsub(/\s/, '_').
@@ -11,11 +20,29 @@ def branch_name(input)
     downcase
 end
 
+def jira_issue_key
+  if match = ARGV.first&.match(/[A-Z]{2,}-\d+/)
+    match[0]
+  end
+end
+
+def jira?
+  !!jira_issue_key
+end
+
+def jira_summary
+  issue_details = `jira issue view --plain #{jira_issue_key}`
+  issue_details.split("\n")[3].match(/\s*#\s(?<summary>.*)/)['summary'].strip
+rescue
+  nil
+end
+
 if ARGV.empty?
-  puts "must specify branch name, ex:"
+  puts "must specify branch name or Jira ID, ex:"
   puts "  new_branch some branch name"
   puts "  new_branch \"some branch name!\""
+  puts "  new_branch PHM-123 # Jira example"
   exit
 end
 
-exec("git co -b mc-#{branch_name(ARGV)}")
+exec("git co -b #{branch_name}")
