@@ -47,12 +47,25 @@ rescue
   nil
 end
 
+def help
+  puts "   new_branch some branch name"
+  puts "     > Switched to a new branch 'some_branch_name'"
+  puts "   new_branch \"some really, really cool branch name! woohoo\""
+  puts "     > Switched to a new branch 'some_really_really_cool_branch_name_woohoo'"
+  puts " When using with Jira:"
+  puts "   new_branch SCH-123"
+  puts "     > Switched to a new branch 'SCH-123/the_summary_of_the_jira_issue'"
+  puts " Requires jira-cli for Jira, see https://github.com/ankitpokhrel/jira-cli/#installation for installation instructions"
+  exit
+end
+
 if ARGV.empty?
   puts "must specify branch name or Jira ID, ex:"
-  puts "  new_branch some branch name"
-  puts "  new_branch \"some branch name!\""
-  puts "  new_branch PHM-123 # Jira example"
-  exit
+  help
+end
+
+if ['-h', 'help'].include? ARGV.first
+  help
 end
 
 exec("git co -b #{branch_name}")
