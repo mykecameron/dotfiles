@@ -6,7 +6,7 @@ def branch_name
   if jira?
     "#{jira_issue_key}/#{sanitize_branch_name(jira_summary)}"
   else
-    "mc-#{sanitize_branch_name(ARGV)}"
+    sanitize_branch_name(ARGV)
   end
 end
 
