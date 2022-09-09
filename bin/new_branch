@@ -1,7 +1,17 @@
 #!/usr/bin/env ruby
-
-# for turning Trello card titles and Jira issue ids into branch names
-
+# Jira issue ids (or arbitrary strings) into branch names
+# 
+# Requires jira-cli for Jira, see https://github.com/ankitpokhrel/jira-cli/#installation for installation instructions
+# 
+# Example use:
+#   new_branch some branch name
+#     > Switched to a new branch 'some_branch_name'
+#   new_branch "some really, really cool branch name! woohoo"
+#     > Switched to a new branch 'some_really_really_cool_branch_name_woohoo'
+#
+# When using with Jira:
+#   new_branch SCH-123
+#     > Switched to a new branch 'SCH-123/the_summary_of_the_jira_issue'
 def branch_name
   if jira?
     "#{jira_issue_key}/#{sanitize_branch_name(jira_summary)}"
