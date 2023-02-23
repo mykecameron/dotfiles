@@ -12,7 +12,7 @@ protocol = https
 [alias]
   a = add
   aa = !git add -A && git status -sb
-  c = commit -m
+  c = commit --no-verify -m 
   cibuild = push origin HEAD:mc-ci -f
   co = checkout
   cob = checkout -b
