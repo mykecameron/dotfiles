@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-bundle exec prmd combine --meta meta.json schemata/ > schema.json
-bundle exec prmd render --template schemata.erb schema.json > schema.md
-bundle exec prmd doc schema.json > schema
-bundle exec prmd render --template schemata.erb schema.json > schema.md
-bundle exec prmd doc --prepend overview.md -a "Bearer 2177de64d3344ff6f4330b72a84106a50e15e1e2da1db6b9ee6db179e2d2136c" schema.json > README.md
