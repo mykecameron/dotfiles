@@ -1,0 +1,15 @@
+# Setup the environment
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+if [[ $SCRIPT_DIR =~ ^(.*)/bin$ ]]
+then
+  ROOT_DIR="${BASH_REMATCH[1]}"
+else
+  echo "Failed to determine root directory for dotfiles"
+  exit
+fi
+
+BASHRC_PATH="${ROOT_DIR}/bashrc"
+
+grep -qxF "source \"${BASHRC_PATH}\"" ~/.bashrc || echo "source \"${BASHRC_PATH}\"" >> ~/.bashrc
