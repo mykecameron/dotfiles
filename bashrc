@@ -33,3 +33,7 @@ function prompt {
   export PS1="$GREEN[\t] $YELLOW\W$RED\$(__git_ps1) $GREEN\u\[\033[00m\] \\$ "
 }
 prompt
+
+# Aliases
+
+alias be="bundle exec"
