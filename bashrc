@@ -11,7 +11,7 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 
 # Set up prompt
-source ./vendor/git-prompt.sh
+source "$HOME/src/dotfiles/vendor/git-prompt.sh"
 function prompt {
   local  BLACK="\[\033[0;30m\]"
   local  BLACKBOLD="\[\033[1;30m\]"
