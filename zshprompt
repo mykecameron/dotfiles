@@ -1,0 +1,9 @@
+# Set up prompt
+autoload -Uz vcs_info
+precmd() { vcs_info }
+
+# Add git branch to prompt
+zstyle ':vcs_info:git:*' formats '%b '
+
+setopt PROMPT_SUBST
+PROMPT='%F{green}%D{%T}%f %F{cyan}%~%f %F{magenta}${vcs_info_msg_0_}%f$ '
