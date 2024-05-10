@@ -1,0 +1,23 @@
+#!/bin/bash
+
+UUID_REGEX="web +([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}) +(true|false)"
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+SHIPYARD_ENVS=$(shipyard get environments --branch $BRANCH)
+
+if [[ $SHIPYARD_ENVS =~ $UUID_REGEX ]]
+then
+  UUID="${BASH_REMATCH[1]}"
+  RUNNING="${BASH_REMATCH[2]}"
+
+  if [[ $RUNNING == "true" ]]
+  then
+    shipyard exec --env $UUID --service api -- bash
+  else
+    echo "Shipyard environment not ready, to restart run:"
+    echo "  shipyard restart environment ${UUID}"
+    echo "Build details: https://shipyard.build/application-build/${UUID}/detail/overview"
+  fi
+else
+  echo "Failed to find shipyard environment matching this branch"
+fi
