@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Setup the environment
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -13,3 +14,45 @@ fi
 BASHRC_PATH="${ROOT_DIR}/bashrc"
 
 grep -qxF "source \"${BASHRC_PATH}\"" ~/.bashrc || echo "source \"${BASHRC_PATH}\"" >> ~/.bashrc
+
+# Symlink a config that has to live at a fixed path. Any file already there is
+# kept as .bak rather than clobbered.
+link() {
+  local src="${ROOT_DIR}/$1"
+  local dest="$2"
+
+  mkdir -p "$(dirname "$dest")"
+
+  if [[ -L $dest ]]
+  then
+    [[ $(readlink "$dest") == "$src" ]] && return
+    rm "$dest"
+  elif [[ -e $dest ]]
+  then
+    mv "$dest" "${dest}.bak"
+    echo "Moved existing ${dest} to ${dest}.bak"
+  fi
+
+  ln -s "$src" "$dest"
+}
+
+link ghostty/config ~/.config/ghostty/config
+link claude/hooks/notify.sh ~/.claude/hooks/notify.sh
+
+# Claude rewrites settings.json in place (temp file + rename), which would
+# replace a symlink with a regular file and silently detach it from the repo.
+# Merging keeps our notification keys in sync while leaving machine-local
+# settings — theme, plugins, model — alone.
+CLAUDE_SETTINGS=~/.claude/settings.json
+NOTIFICATION_SETTINGS="${ROOT_DIR}/claude/settings.notifications.json"
+
+mkdir -p "$(dirname "$CLAUDE_SETTINGS")"
+[[ -f $CLAUDE_SETTINGS ]] || echo '{}' > "$CLAUDE_SETTINGS"
+
+if jq -s '.[0] * .[1]' "$CLAUDE_SETTINGS" "$NOTIFICATION_SETTINGS" > "${CLAUDE_SETTINGS}.new"
+then
+  mv "${CLAUDE_SETTINGS}.new" "$CLAUDE_SETTINGS"
+else
+  rm -f "${CLAUDE_SETTINGS}.new"
+  echo "Failed to merge notification settings into ${CLAUDE_SETTINGS}"
+fi
