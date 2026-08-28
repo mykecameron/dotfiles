@@ -1,0 +1,268 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "open3"
+require "optparse"
+require "time"
+
+QUERY = <<~GQL
+  query($q: String!, $limit: Int!) {
+    search(query: $q, type: ISSUE, first: $limit) {
+      issueCount
+      nodes {
+        ... on PullRequest {
+          number
+          title
+          url
+          isDraft
+          createdAt
+          mergeable
+          mergeStateStatus
+          reviewDecision
+          baseRefName
+          repository { nameWithOwner }
+          reviewThreads(first: 100) { nodes { isResolved } }
+          reviewRequests(first: 25) {
+            nodes { requestedReviewer { ... on User { login } ... on Team { name } } }
+          }
+          commits(last: 1) {
+            nodes {
+              commit {
+                statusCheckRollup {
+                  contexts(first: 100) {
+                    nodes {
+                      ... on CheckRun { name conclusion status }
+                      ... on StatusContext { context state }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+GQL
+
+FAILED_CONCLUSIONS = %w[FAILURE TIMED_OUT STARTUP_FAILURE ACTION_REQUIRED CANCELLED].freeze
+FAILED_STATES = %w[FAILURE ERROR].freeze
+RUNNING_STATUSES = %w[QUEUED IN_PROGRESS WAITING REQUESTED PENDING].freeze
+RUNNING_STATES = %w[PENDING EXPECTED].freeze
+
+GROUPS = [
+  [:ready, "READY TO MERGE", "✅", 32],
+  [:needs_action, "NEEDS ACTION", "❌", 31],
+  [:awaiting_review, "IN GOOD SHAPE, NEEDS REVIEW", "\u{1F440}", 33],
+  [:draft, "DRAFT", "\u{1F4DD}", 90]
+].freeze
+
+def parse_options
+  options = {author: "@me", limit: 50, scope: :auto}
+  OptionParser.new do |parser|
+    parser.banner = "Usage: bin/pr-status [options]"
+    parser.on("-a", "--author LOGIN", "GitHub login (default: you)") { |value| options[:author] = value }
+    parser.on("-r", "--repo OWNER/NAME", "Limit to one repo (default: the repo you are in)") { |value| options[:scope] = value }
+    parser.on("-A", "--all-repos", "Search every repo you can see") { options[:scope] = :all }
+    parser.on("-n", "--limit N", Integer, "Max PRs to fetch, 1-100 (default: 50)") { |value| options[:limit] = value.clamp(1, 100) }
+    parser.on("-h", "--help") do
+      puts parser
+      exit
+    end
+  end.parse!
+  options
+end
+
+def current_repo
+  output, _, status = Open3.capture3("gh", "repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner")
+  status.success? ? output.strip : nil
+end
+
+def resolve_repo(scope)
+  case scope
+  when :all then nil
+  when :auto then current_repo
+  else scope
+  end
+end
+
+def search_pull_requests(search_query, limit)
+  output, error, status = Open3.capture3(
+    "gh", "api", "graphql",
+    "-H", "Accept: application/vnd.github.merge-info-preview+json",
+    "-F", "q=#{search_query}",
+    "-F", "limit=#{limit}",
+    "-f", "query=#{QUERY}"
+  )
+  abort "gh api graphql failed:\n#{error}" unless status.success?
+  JSON.parse(output).fetch("data").fetch("search")
+end
+
+def check_contexts(pull_request)
+  pull_request.dig("commits", "nodes", 0, "commit", "statusCheckRollup", "contexts", "nodes") || []
+end
+
+def failed_checks(pull_request)
+  check_contexts(pull_request)
+    .select { |context| FAILED_CONCLUSIONS.include?(context["conclusion"]) || FAILED_STATES.include?(context["state"]) }
+    .map { |context| context["name"] || context["context"] }
+end
+
+def running_checks?(pull_request)
+  check_contexts(pull_request).any? do |context|
+    if context.key?("status")
+      RUNNING_STATUSES.include?(context["status"]) || (context["conclusion"].nil? && context["status"] != "COMPLETED")
+    else
+      RUNNING_STATES.include?(context["state"])
+    end
+  end
+end
+
+def unresolved_comment_count(pull_request)
+  pull_request.dig("reviewThreads", "nodes").count { |thread| thread["isResolved"] == false }
+end
+
+def requested_reviewers(pull_request)
+  pull_request.dig("reviewRequests", "nodes")
+    .map { |request| request["requestedReviewer"] }
+    .compact
+    .map { |reviewer| reviewer["login"] || reviewer["name"] }
+end
+
+def blocking_reasons(pull_request)
+  reasons = []
+  reasons << "merge conflicts" if pull_request["mergeable"] == "CONFLICTING" || pull_request["mergeStateStatus"] == "DIRTY"
+  reasons << "behind #{pull_request["baseRefName"]}" if pull_request["mergeStateStatus"] == "BEHIND"
+  reasons << "changes requested" if pull_request["reviewDecision"] == "CHANGES_REQUESTED"
+
+  failures = failed_checks(pull_request)
+  reasons << "#{failures.size} check#{"s" if failures.size > 1} failing: #{failures.first(2).join(", ")}" if failures.any?
+
+  unresolved = unresolved_comment_count(pull_request)
+  reasons << "#{unresolved} unresolved comment#{"s" if unresolved > 1}" if unresolved.positive?
+
+  reasons
+end
+
+def review_wait_status(pull_request)
+  reviewers = requested_reviewers(pull_request)
+  return "no reviewers requested" if reviewers.empty?
+  "waiting on #{reviewers.first(3).join(", ")}"
+end
+
+def classify(pull_request)
+  reasons = blocking_reasons(pull_request)
+  reasons.unshift("draft") if reasons.any? && pull_request["isDraft"]
+  return [:needs_action, reasons.join(" · ")] if reasons.any?
+  return [:draft, review_wait_status(pull_request)] if pull_request["isDraft"]
+
+  if pull_request["reviewDecision"] == "APPROVED"
+    detail = running_checks?(pull_request) ? "checks still running" : "checks green"
+    return [:ready, "approved · #{detail}"]
+  end
+
+  [:awaiting_review, review_wait_status(pull_request)]
+end
+
+def age(iso8601)
+  seconds = Time.now - Time.parse(iso8601)
+  return "#{(seconds / 86_400).floor}d" if seconds >= 86_400
+  return "#{(seconds / 3_600).floor}h" if seconds >= 3_600
+  "#{(seconds / 60).floor}m"
+end
+
+COLOR = $stdout.tty? && ENV["NO_COLOR"].to_s.empty?
+
+def paint(text, code)
+  COLOR ? "\e[#{code}m#{text}\e[0m" : text
+end
+
+def hyperlink(text, url)
+  COLOR ? "\e]8;;#{url}\e\\#{text}\e]8;;\e\\" : text
+end
+
+def terminal_width
+  return ENV["COLUMNS"].to_i if ENV["COLUMNS"].to_i.positive?
+  require "io/console"
+  $stdout.winsize.last
+rescue
+  120
+end
+
+def truncate(text, width)
+  (text.length <= width) ? text : "#{text[0, width - 1]}…"
+end
+
+def build_row(pull_request, show_repo)
+  group, status = classify(pull_request)
+  tag = "##{pull_request["number"]}"
+  tag = "#{pull_request.dig("repository", "nameWithOwner")}#{tag}" if show_repo
+  [group, {
+    tag: tag,
+    title: pull_request["title"].strip,
+    url: pull_request["url"],
+    age: age(pull_request["createdAt"]),
+    status: status,
+    created_at: pull_request["createdAt"]
+  }]
+end
+
+def render(grouped, scope_label, author)
+  rows = grouped.values.flatten
+  if rows.empty?
+    puts "No open PRs for #{author} in #{scope_label}."
+    return
+  end
+
+  tag_width = rows.map { |row| row[:tag].length }.max
+  age_width = rows.map { |row| row[:age].length }.max
+  status_width = [rows.map { |row| row[:status].length }.max, 44].min
+  title_width = [terminal_width - (tag_width + age_width + status_width + 8), 24].max
+  title_width = [title_width, rows.map { |row| row[:title].length }.max].min
+
+  puts
+  puts paint("#{rows.size} open PR#{"s" if rows.size > 1} for #{author} in #{scope_label}", 1)
+
+  GROUPS.each do |key, label, icon, color|
+    group_rows = grouped[key]
+    next if group_rows.empty?
+
+    puts
+    puts paint("#{icon}  #{label} (#{group_rows.size})", "1;#{color}")
+    group_rows.each do |row|
+      cells = [
+        hyperlink(row[:tag].ljust(tag_width), row[:url]),
+        paint(row[:age].rjust(age_width), 90),
+        truncate(row[:status], status_width).ljust(status_width),
+        truncate(row[:title], title_width)
+      ]
+      cells << row[:url] unless COLOR
+      puts "  #{cells.join("  ")}"
+    end
+  end
+
+  puts
+  puts paint(GROUPS.map { |key, label, _, _| "#{grouped[key].size} #{label.downcase}" }.join(" · "), 90)
+  puts
+end
+
+options = parse_options
+repo = resolve_repo(options[:scope])
+search_query = ["is:pr", "is:open", "author:#{options[:author]}", repo && "repo:#{repo}"].compact.join(" ")
+
+search = search_pull_requests(search_query, options[:limit])
+pull_requests = search["nodes"].reject(&:empty?)
+
+grouped = GROUPS.to_h { |key, _, _, _| [key, []] }
+pull_requests.each do |pull_request|
+  group, row = build_row(pull_request, repo.nil?)
+  grouped[group] << row
+end
+grouped.each_value { |group_rows| group_rows.sort_by! { |row| row[:created_at] } }
+
+render(grouped, repo || "all repos", (options[:author] == "@me") ? "you" : options[:author])
+
+if search["issueCount"] > pull_requests.size
+  warn "Showing #{pull_requests.size} of #{search["issueCount"]} matches; raise --limit to see the rest."
+end

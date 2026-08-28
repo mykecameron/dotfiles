@@ -39,6 +39,15 @@ link() {
 link ghostty/config ~/.config/ghostty/config
 link claude/hooks/notify.sh ~/.claude/hooks/notify.sh
 
+# ~/.local/bin is already on PATH from .zshrc, so linking a script there is all
+# it takes to make it runnable from anywhere — and it stays pointed at the repo.
+link bin/pr-status ~/.local/bin/pr-status
+
+# Without a global .tool-versions, asdf refuses to resolve `ruby` outside a
+# project that pins one, which breaks any Ruby script on PATH when you run it
+# from somewhere like ~.
+link tool-versions ~/.tool-versions
+
 # Claude rewrites settings.json in place (temp file + rename), which would
 # replace a symlink with a regular file and silently detach it from the repo.
 # Merging keeps our notification keys in sync while leaving machine-local
