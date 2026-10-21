@@ -15,8 +15,8 @@ To bootstrap a system with these dotfiles run:
 ```
 
 `bin/bootstrap` is safe to re-run: it sources `bashrc` from `~/.bashrc`, symlinks
-`ghostty/config`, `claude/hooks/notify.sh`, `bin/pr-status`, and `tool-versions`
-into place (moving anything already there to `.bak`), and merges
+`ghostty/config`, `claude/hooks/notify.sh`, `claude/skills`, `bin/pr-status`, and
+`tool-versions` into place (moving anything already there to `.bak`), and merges
 `claude/settings.notifications.json` into `~/.claude/settings.json`.
 
 `tool-versions` becomes `~/.tool-versions`, asdf's global fallback. Without it
@@ -54,6 +54,13 @@ Ruby with no gems, and one `gh api graphql` call rather than one per PR. Needs
 In a terminal it colours the group headings and makes each PR number a clickable
 hyperlink. Piped, or with `NO_COLOR` set, it drops the escapes and adds a plain
 URL column, so `pr-status | pbcopy` gives you something pasteable.
+
+## Claude Code skills
+
+`claude/skills` becomes `~/.claude/skills`, so each skill there is a slash command
+in every project. `/triage-review <path>` triages a code-review markdown file: it
+checks each finding against the code, says which to fix and why the rest are
+skipped, and drafts PR description notes for the skips.
 
 ## Claude Code notifications
 

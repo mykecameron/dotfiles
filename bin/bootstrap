@@ -38,6 +38,7 @@ link() {
 
 link ghostty/config ~/.config/ghostty/config
 link claude/hooks/notify.sh ~/.claude/hooks/notify.sh
+link claude/skills ~/.claude/skills
 [[ -d "$HOME/Applications/Claude Code Notifier.app" ]] || "${ROOT_DIR}/bin/build-claude-notifier"
 
 # ~/.local/bin is already on PATH from .zshrc, so linking a script there is all
