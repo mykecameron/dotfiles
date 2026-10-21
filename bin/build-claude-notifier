@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Builds ~/Applications/Claude Code Notifier.app: a copy of terminal-notifier
+# carrying the robot icon, since macOS takes a banner's icon from the sending app.
+set -euo pipefail
+
+ROOT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+APP="$HOME/Applications/Claude Code Notifier.app"
+CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+
+"$CHROME" --headless=new --disable-gpu --hide-scrollbars \
+  --default-background-color=00000000 --window-size=1024,1024 \
+  --screenshot="$work/icon.png" "file://$ROOT_DIR/claude/notifier/icon.svg" 2>/dev/null
+
+git clone -q --depth 1 https://github.com/julienXX/terminal-notifier.git "$work/src"
+make -s -C "$work/src" icon ICON="$work/icon.png" APP_NAME=claude-metal
+
+mkdir -p "$(dirname "$APP")"
+rm -rf "$APP"
+cp -R "$work/src/build/claude-metal.app" "$APP"
+/usr/libexec/PlistBuddy -c 'Set :CFBundleName Claude Code' "$APP/Contents/Info.plist"
+/usr/libexec/PlistBuddy -c 'Add :CFBundleDisplayName string Claude Code' "$APP/Contents/Info.plist"
+codesign --force --deep -s - "$APP"
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$APP"
+
+echo "Built $APP"
