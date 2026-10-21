@@ -56,8 +56,23 @@ case "$kind" in
     ;;
 esac
 
-/usr/bin/osascript - "$title" "$body" <<'APPLESCRIPT' >/dev/null 2>&1 || true
+# Look the terminal up now rather than on click: by then the rolling title may
+# have moved on. The tab name carries a status glyph prefix, hence `contains`.
+terminal_id=$(/usr/bin/osascript - "$title" "$cwd" <<'APPLESCRIPT' 2>/dev/null || true
 on run argv
-  display notification (item 2 of argv) with title (item 1 of argv)
+  tell application "Ghostty"
+    set matches to (terminals whose name contains (item 1 of argv))
+    if matches is {} then set matches to (terminals whose working directory is (item 2 of argv))
+    if matches is {} then return ""
+    return id of item 1 of matches
+  end tell
 end run
 APPLESCRIPT
+)
+
+set -- -title "$title" -message "$body" -group "${session_id:-claude}" -activate com.mitchellh.ghostty
+if [ -n "$terminal_id" ]; then
+  set -- "$@" -execute "/usr/bin/osascript -e 'tell application \"Ghostty\" to focus (first terminal whose id is \"$terminal_id\")'"
+fi
+
+"$HOME/Applications/Claude Code Notifier.app/Contents/MacOS/terminal-notifier" "$@" >/dev/null 2>&1 &

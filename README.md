@@ -63,7 +63,14 @@ in a background tab doesn't sit there unnoticed.
 - `claude/hooks/notify.sh` — the banner itself, run by Claude's `Notification` and
   `Stop` hooks. Titled with whatever the Ghostty tab shows, so several sessions in
   one directory stay distinguishable. Completion banners are skipped when Ghostty
-  is already frontmost.
+  is already frontmost. Clicking a banner focuses the Ghostty tab or split the
+  session is running in.
+- `bin/build-claude-notifier` — builds `~/Applications/Claude Code Notifier.app`,
+  a copy of [terminal-notifier](https://github.com/julienXX/terminal-notifier)
+  wearing the robot in `claude/notifier/icon.svg`. macOS takes a banner's icon
+  from the app that sends it, so a custom icon means a custom app. `bootstrap`
+  runs it when the app is missing. Rerun it after editing the icon. Needs Chrome
+  to render the SVG.
 - `claude/settings.notifications.json` — merged rather than symlinked, because
   Claude rewrites `settings.json` with a temp file and a rename, which would
   quietly replace a symlink with a regular file.
@@ -71,5 +78,6 @@ in a background tab doesn't sit there unnoticed.
   tab title, and a border on the split that's waiting. All silent.
 
 Both apps need permission in System Settings → Notifications, set to **Alerts**
-rather than Banners so a missed prompt stays on screen: **Ghostty**, and **Script
-Editor** (which is what `osascript` notifications are attributed to).
+rather than Banners so a missed prompt stays on screen: **Ghostty** and **Claude
+Code**. The first click also asks to let Claude Code control Ghostty, which is
+how it picks the right tab.
