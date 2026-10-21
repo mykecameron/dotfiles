@@ -35,36 +35,37 @@
       <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.7"/>
     </filter>
     <clipPath id="squircle"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
+    <linearGradient id="hair" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2f36"/>
+      <stop offset="1" stop-color="#08090b"/>
+    </linearGradient>
   </defs>
-
   <g clip-path="url(#squircle)">
     <rect x="100" y="100" width="824" height="824" fill="url(#bg)"/>
     <path fill="url(#flame)" d="M100 924 L100 700 C150 760 170 640 215 600 C230 680 270 700 300 640 C320 560 290 520 330 470 C360 560 410 600 420 690 C450 620 480 600 512 540 C545 600 575 620 604 690 C615 600 665 560 694 470 C735 520 705 560 724 640 C755 700 795 680 810 600 C855 640 875 760 924 700 L924 924 Z"/>
   </g>
-
   <g filter="url(#shadow)">
-    <path fill="url(#horn)" stroke="#1b1e22" stroke-width="8" d="M330 330 C260 300 220 220 250 130 C285 200 330 235 395 265 Z"/>
-    <path fill="url(#horn)" stroke="#1b1e22" stroke-width="8" d="M694 330 C764 300 804 220 774 130 C739 200 694 235 629 265 Z"/>
-
+    <path fill="url(#hair)" stroke="#000" stroke-width="6" d="M512 180 C330 180 230 260 220 420 C210 560 190 680 160 820 L215 770 L230 860 L280 780 L300 870 L345 770 L360 700 L664 700 L679 770 L724 870 L744 780 L794 860 L809 770 L864 820 C834 680 814 560 804 420 C794 260 694 180 512 180 Z"/>
+    <g stroke="#3d434c" stroke-width="7" fill="none" stroke-linecap="round" opacity="0.8">
+      <path d="M250 420 C245 560 235 680 215 780"/>
+      <path d="M290 470 C290 600 285 700 280 790"/>
+      <path d="M774 420 C779 560 789 680 809 780"/>
+      <path d="M734 470 C734 600 739 700 744 790"/>
+    </g>
+  </g>
+  <g filter="url(#shadow)">
     <rect x="290" y="250" width="444" height="410" rx="70" fill="url(#chrome)" stroke="#1b1e22" stroke-width="12"/>
     <rect x="315" y="275" width="394" height="40" rx="20" fill="#ffffff" opacity="0.35"/>
-
-    <rect x="250" y="390" width="50" height="120" rx="14" fill="#6b737c" stroke="#1b1e22" stroke-width="10"/>
-    <rect x="724" y="390" width="50" height="120" rx="14" fill="#6b737c" stroke="#1b1e22" stroke-width="10"/>
-
+    <path fill="url(#hair)" stroke="#000" stroke-width="6" d="M285 330 C290 230 380 200 512 200 C644 200 734 230 739 330 L700 300 L680 345 L640 300 L610 340 L570 295 L540 335 L512 292 L484 335 L454 295 L414 340 L384 300 L344 345 L324 300 Z"/>
     <g fill="#e9edf0" stroke="#1b1e22" stroke-width="5">
-      <circle cx="330" cy="290" r="11"/><circle cx="694" cy="290" r="11"/>
       <circle cx="330" cy="620" r="11"/><circle cx="694" cy="620" r="11"/>
     </g>
-
     <path fill="#1b1e22" d="M330 360 L495 410 L495 440 L330 395 Z"/>
     <path fill="#1b1e22" d="M694 360 L529 410 L529 440 L694 395 Z"/>
-
     <g filter="url(#glow)">
       <path fill="url(#eye)" d="M345 420 L485 455 L470 505 L360 490 Z"/>
       <path fill="url(#eye)" d="M679 420 L539 455 L554 505 L664 490 Z"/>
     </g>
-
     <rect x="370" y="535" width="284" height="90" rx="16" fill="#15181b" stroke="#1b1e22" stroke-width="8"/>
     <g fill="#d9dee3" stroke="#1b1e22" stroke-width="5">
       <path d="M386 540 L416 540 L401 585 Z"/>
@@ -80,7 +81,6 @@
       <path d="M562 620 L592 620 L577 578 Z"/>
       <path d="M606 620 L636 620 L621 578 Z"/>
     </g>
-
     <rect x="330" y="660" width="364" height="70" rx="18" fill="#1b1e22"/>
     <g fill="url(#horn)" stroke="#0d0f11" stroke-width="5">
       <path d="M350 730 L380 730 L365 800 Z"/>
