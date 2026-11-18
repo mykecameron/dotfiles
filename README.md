@@ -15,9 +15,10 @@ To bootstrap a system with these dotfiles run:
 ```
 
 `bin/bootstrap` is safe to re-run: it sources `bashrc` from `~/.bashrc`, symlinks
-`ghostty/config`, `claude/hooks/notify.sh`, `claude/skills`, `bin/pr-status`, and
+`ghostty/config`, the hooks in `claude/hooks`, `claude/skills`, `bin/pr-status`, and
 `tool-versions` into place (moving anything already there to `.bak`), and merges
-`claude/settings.notifications.json` into `~/.claude/settings.json`.
+each `claude/settings.*.json` fragment into `~/.claude/settings.json`. Merging only
+adds keys, so deleting a fragment later does not remove what it already merged.
 
 `tool-versions` becomes `~/.tool-versions`, asdf's global fallback. Without it
 asdf won't resolve `ruby` outside a project that pins a version, so any Ruby
@@ -88,3 +89,21 @@ Both apps need permission in System Settings → Notifications, set to **Alerts*
 rather than Banners so a missed prompt stays on screen: **Ghostty** and **Claude
 Code**. The first click also asks to let Claude Code control Ghostty, which is
 how it picks the right tab.
+
+## Caveman subagents
+
+Subagents write their final report in a terse "caveman" voice, so less of the
+parent session's context goes to reading them. The main chat, and the briefs it
+sends to subagents, stay plain English.
+
+- `claude/hooks/caveman-subagent.sh` runs on Claude's `SubagentStart` hook and adds
+  `claude/caveman/rules.md` to every subagent's context.
+- `claude/settings.caveman.json` registers the hook. Delete it before running
+  `bootstrap` to opt out.
+
+The rules are adapted from the `caveman` skill in
+[JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman) at `a192894`,
+under the Apache 2.0 license in `claude/caveman/LICENSE`. Changes: the reader is
+the parent agent instead of a person. The parts about switching modes, tool-run
+status lines, reply language and talking to a user are removed. A new rule lets
+the brief override the voice when it asks for a specific format.

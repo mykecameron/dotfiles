@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/hooks/caveman-subagent.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
